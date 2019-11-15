@@ -1,7 +1,7 @@
 /**
  * Класс для определения минимального, максимального и среднего чисел.
  * @autor Ariona
- * @version 0.1
+ * @version 0.2
  */
 
 import java.io.BufferedReader;
@@ -14,34 +14,44 @@ import java.util.*;
 
 public class Thing {
 
-    private int[] array;
-
-    private List<? extends Number> numbers;
-
-
-    public Thing(int[] array) {
-
+    public int getMin(int[] array) {
         if (array != null && array.length != 0) {
-            this.array = array;
+            Arrays.sort(array);
+            return array[0];
         } else {
             throw new RuntimeException("Неверный аргумент конструктора");
         }
     }
 
-    public Thing(List<? extends Number> numbers) {
-
+    public Number getMin(List<? extends Number> numbers) {
         if (numbers != null && numbers.size() != 0){
-            this.numbers = numbers;
+            sortListNumbers(numbers);
+            return numbers.get(0);
         } else {
             throw new RuntimeException("Неверный аргумент конструктора");
         }
-
     }
+
+    private void sortListNumbers(List<? extends Number> numbers) {
+        Collections.sort(numbers,new Comparator<Number>() {
+            @Override
+            public int compare(Number o1, Number o2) {
+                Double d1 = (o1 == null) ? Double.POSITIVE_INFINITY : o1.doubleValue();
+                Double d2 = (o2 == null) ? Double.POSITIVE_INFINITY : o2.doubleValue();
+                return  d1.compareTo(d2);
+            }
+        });
+    }
+
     /**
      * @param fileName - содержит путь к файлу, числа в котором представлены в одну строку через пробел
      */
-    public Thing(String fileName) {
+    public Number getMin(String fileName) {
+        List numbers = getListFromFile(fileName);
+        return getMin(numbers);
+    }
 
+    private List<? extends Number> getListFromFile(String fileName) {
         if (fileName == null || fileName.isEmpty()) {
             throw new RuntimeException("Неверный аргумент конструктора");
         }
@@ -59,96 +69,81 @@ public class Thing {
         try {
             strings = reader.readLine().split(" ");
 
+            NumberFormat format = NumberFormat.getInstance();
             for (int i = 0; i < strings.length; i++) {
                 try {
-                    numbersFromFile.add(NumberFormat.getInstance().parse(strings[i]));
+                    numbersFromFile.add(format.parse(strings[i]));
                 } catch (NumberFormatException | ParseException e) {
                     throw new RuntimeException("Неверный формат данных");
                 }
             }
 
-            numbers = numbersFromFile;
-
         } catch (IOException e) {
             throw new RuntimeException("Ошибка чтения файла!");
         }
+        return numbersFromFile;
     }
 
-    public Number getMin() {
-
-        if (array != null) {
-            return getMinArray();
+    public int getMax(int[] array) {
+        if (array != null && array.length != 0) {
+            Arrays.sort(array);
+            return array[array.length-1];
+        } else {
+            throw new RuntimeException("Неверный аргумент конструктора");
         }
-
-        return getMinListNumbers();
     }
 
-    private int getMinArray() {
-        Arrays.sort(array);
-        return array[0];
+    public Number getMax(List<? extends Number> numbers) {
+        if (numbers != null && numbers.size() != 0){
+            sortListNumbers(numbers);
+            return numbers.get(numbers.size()-1);
+        } else {
+            throw new RuntimeException("Неверный аргумент конструктора");
+        }
     }
 
-    private Number getMinListNumbers() {
-        sortListNumbers();
-        return numbers.get(0);
+    /**
+     * @param fileName - содержит путь к файлу, числа в котором представлены в одну строку через пробел
+     */
+    public Number getMax(String fileName) {
+        List numbersFromFile = getListFromFile(fileName);
+        return getMax(numbersFromFile);
     }
 
-    private void sortListNumbers() {
-        Collections.sort(numbers,new Comparator<Number>() {
-            @Override
-            public int compare(Number o1, Number o2) {
-                Double d1 = (o1 == null) ? Double.POSITIVE_INFINITY : o1.doubleValue();
-                Double d2 = (o2 == null) ? Double.POSITIVE_INFINITY : o2.doubleValue();
-                return  d1.compareTo(d2);
+    public double getAverage(int[] array) {
+        if (array != null && array.length != 0) {
+            OptionalDouble average = Arrays.stream(array).average();
+            if (average.isPresent()) {
+                return average.getAsDouble();
+            } else {
+                throw new RuntimeException();
             }
-        });
-    }
-
-    public Number getMax() {
-
-        if (array != null) {
-            return getMaxArray();
+        } else {
+            throw new RuntimeException("Неверный аргумент конструктора");
         }
 
-        return getMaxListNumbers();
     }
 
-    private Number getMaxListNumbers() {
-        sortListNumbers();
-        return numbers.get(numbers.size()-1);
-    }
+    public double getAverage(List<? extends Number> numbers) {
+        if (numbers != null && numbers.size() != 0){
+            double sum = 0;
 
-    private Number getMaxArray() {
-        Arrays.sort(array);
-        return array[array.length-1];
-    }
+            for (Number number : numbers) {
+                sum += number.doubleValue();
+            }
 
-    public Number getAverage() {
-
-        if (array != null) {
-            return getAvgArray();
+            return sum / numbers.size();
+        } else {
+            throw new RuntimeException("Неверный аргумент конструктора");
         }
 
-        return getAvgListNumbers();
     }
 
-    private double getAvgListNumbers() {
-        double sum = 0;
-
-        for (Number number : numbers) {
-            sum += number.doubleValue();
-        }
-
-        return sum / numbers.size();
-    }
-
-    private double getAvgArray() {
-        double sum = 0;
-
-        for (int j = 0; j < array.length; j++) {
-            sum += array[j];
-        }
-
-        return sum / array.length;
+    /**
+     * @param fileName - содержит путь к файлу, числа в котором представлены в одну строку через пробел
+     */
+    public double getAverage(String fileName) {
+        List numbers = getListFromFile(fileName);
+        return getAverage(numbers);
     }
 }

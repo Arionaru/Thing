@@ -1,90 +1,87 @@
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static junit.framework.TestCase.assertEquals;
 
 
 public class ThingTest {
 
-    private Thing thing;
+    Thing thing;
 
-    @Test
-    public void getMinArray() {
-        thing = new Thing(new int[]{5,-4,555,332,-56,43});
-        assertEquals(-56,thing.getMin());
+    @Before
+    public void create() {
+        thing = new Thing();
     }
 
     @Test
-    public void getMinListNumbers() {
-        thing = new Thing(Arrays.asList(-2,-0.5,55,3.4));
-        assertEquals(-2,thing.getMin());
+    public void getMin() {
+        assertEquals(-56,thing.getMin(new int[]{5,-4,555,332,-56,43}));
     }
 
     @Test
-    public void getMinFromFile() {
-        thing = new Thing("a:/input.txt");
-        assertEquals(-45535L,thing.getMin());
+    public void getMin1() {
+        assertEquals(-2,thing.getMin(Arrays.asList(-2,-0.5,55,3.4)));
     }
 
     @Test
-    public void getMaxArray() {
-        thing = new Thing(new int[]{5,-4,555,332,-56,43});
-        assertEquals(555,thing.getMax());
+    public void getMin2() {
+        assertEquals(-45535L,thing.getMin("a:/input.txt"));
     }
 
     @Test
-    public void getMaxListNumbers() {
-        thing = new Thing(Arrays.asList(-2,-0.5,55,3.4));
-        assertEquals(55,thing.getMax());
+    public void getMax() {
+        assertEquals(555, thing.getMax(new int[]{5,-4,555,332,-56,43}));
     }
 
     @Test
-    public void getMaxFromFile() {
-        thing = new Thing("a:/input.txt");
-        assertEquals(5675L,thing.getMax());
+    public void getMax1() {
+        assertEquals(55,thing.getMax(Arrays.asList(-2,-0.5,55,3.4)));
     }
 
     @Test
-    public void getAvgArray() {
-        thing = new Thing(new int[]{5,-5,5,-5,-5,5});
-        assertEquals(0.0, thing.getAverage());
+    public void getMax2() {
+        assertEquals(5675L, thing.getMax("a:/input.txt"));
     }
 
     @Test
-    public void getAvgList() {
-        thing = new Thing(Arrays.asList(-2,-0.5,55,3.4));
-        assertEquals(13.975,thing.getAverage());
+    public void getAverage() {
+        assertEquals(0.0, thing.getAverage(new int[]{5,-5,5,-5,-5,5}));
     }
 
     @Test
-    public void getAvgFile() {
-        thing = new Thing("a:/input1.txt");
-        assertEquals(5.0,thing.getAverage());
+    public void getAverage1() {
+        assertEquals(10.0, thing.getAverage(Arrays.asList(10, 0.5, 19.5)));
+    }
+
+    @Test
+    public void getAverage2() {
+        assertEquals(5.0, thing.getAverage("a:/input1.txt"));
     }
 
     @Test(expected = RuntimeException.class)
     public void nullArray() {
         int[] arr = null;
-        thing = new Thing(arr);
+        thing.getAverage(arr);
     }
 
     @Test(expected = RuntimeException.class)
     public void emptyArray() {
         int[] arr = new int[0];
-        thing = new Thing(arr);
+        thing.getMin(arr);
     }
 
     @Test(expected = RuntimeException.class)
     public void nullList() {
         List<Integer> list = null;
-        thing = new Thing(list);
+        thing.getMax(list);
     }
 
     @Test(expected = RuntimeException.class)
     public void emptyList() {
-        thing = new Thing(new ArrayList<Integer>());
+        thing.getMax(new ArrayList<>());
     }
 }
