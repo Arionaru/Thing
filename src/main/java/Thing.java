@@ -19,7 +19,7 @@ public class Thing {
             Arrays.sort(array);
             return array[0];
         } else {
-            throw new RuntimeException("Неверный аргумент конструктора");
+            throw new RuntimeException("Неверный формат данных");
         }
     }
 
@@ -28,7 +28,7 @@ public class Thing {
             sortListNumbers(numbers);
             return numbers.get(0);
         } else {
-            throw new RuntimeException("Неверный аргумент конструктора");
+            throw new RuntimeException("Неверный формат данных");
         }
     }
 
@@ -53,7 +53,7 @@ public class Thing {
 
     private List<? extends Number> getListFromFile(String fileName) {
         if (fileName == null || fileName.isEmpty()) {
-            throw new RuntimeException("Неверный аргумент конструктора");
+            throw new RuntimeException("Неверный формат данных");
         }
 
         BufferedReader reader;
@@ -89,7 +89,7 @@ public class Thing {
             Arrays.sort(array);
             return array[array.length-1];
         } else {
-            throw new RuntimeException("Неверный аргумент конструктора");
+            throw new RuntimeException("Неверный формат данных");
         }
     }
 
@@ -98,7 +98,7 @@ public class Thing {
             sortListNumbers(numbers);
             return numbers.get(numbers.size()-1);
         } else {
-            throw new RuntimeException("Неверный аргумент конструктора");
+            throw new RuntimeException("Неверный формат данных");
         }
     }
 
@@ -119,7 +119,7 @@ public class Thing {
                 throw new RuntimeException();
             }
         } else {
-            throw new RuntimeException("Неверный аргумент конструктора");
+            throw new RuntimeException("Неверный формат данных");
         }
 
     }
@@ -134,7 +134,7 @@ public class Thing {
 
             return sum / numbers.size();
         } else {
-            throw new RuntimeException("Неверный аргумент конструктора");
+            throw new RuntimeException("Неверный формат данных");
         }
 
     }
