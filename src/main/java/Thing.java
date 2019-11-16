@@ -132,4 +132,9 @@ public class Thing<T extends Number> {
     public int size() {
         return size;
     }
+
+    public void clean() {
+        numbers = EMPTY_ELEMENTDATA;
+        size = 0;
+    }
 }
