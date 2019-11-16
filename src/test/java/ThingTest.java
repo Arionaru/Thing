@@ -10,78 +10,101 @@ import static junit.framework.TestCase.assertEquals;
 
 public class ThingTest {
 
-    Thing thing;
+    private Thing<Integer> integerThing;
+    private Thing<Long> longThing;
+    private Thing<Double> doubleThing;
 
     @Before
     public void create() {
-        thing = new Thing();
+        integerThing = new Thing<>();
+        longThing = new Thing<>();
+        doubleThing = new Thing<>();
+    }
+
+    @Test
+    public void constructorWithoutParameterTest() {
+        Thing<Integer> thing = new Thing<>();
+        assertEquals("[]", thing.toString());
+    }
+
+    @Test
+    public void constructorWithList() {
+        Double[] d = {5.0,-0.5, 5.5};
+        List<Double> doubles = new ArrayList<>(Arrays.asList(d));
+        Thing<Double> thing = new Thing<>(doubles);
+        assertEquals("[5.0, -0.5, 5.5]", thing.toString());
+    }
+
+    @Test
+    public void add() {
+        integerThing.add(5);
+        assertEquals("[5]",integerThing.toString());
+    }
+
+    @Test
+    public void addAll() {
+        integerThing.addAll(Arrays.asList(5,5,5,5,5));
+        assertEquals("[5, 5, 5, 5, 5]", integerThing.toString());
+    }
+
+    @Test
+    public void add2() {
+        longThing.add(5L);
+        assertEquals("[5]", longThing.toString());
+    }
+
+    @Test
+    public void addAll1() {
+        List<Long> longs = new ArrayList<>(Arrays.asList(5L,5L,5L));
+        longThing.addAll(longs);
+        assertEquals("[5, 5, 5]", longThing.toString());
+    }
+
+    @Test
+    public void addAll2() {
+        List<Double> doubles = new ArrayList<>(Arrays.asList(5.0,5.0,-0.5,5.5));
+        doubleThing.addAll(doubles);
+        assertEquals("[5.0, 5.0, -0.5, 5.5]", doubleThing.toString());
     }
 
     @Test
     public void getMin() {
-        assertEquals(-56,thing.getMin(new int[]{5,-4,555,332,-56,43}));
-    }
-
-    @Test
-    public void getMin1() {
-        assertEquals(-2,thing.getMin(Arrays.asList(-2,-0.5,55,3.4)));
-    }
-
-    @Test
-    public void getMin2() {
-        assertEquals(-45535L,thing.getMin("a:/input.txt"));
+        List<Double> doubles = new ArrayList<>(Arrays.asList(5.0,5.0,-0.5,5.5));
+        doubleThing.addAll(doubles);
+        assertEquals(-0.5,doubleThing.getMin());
     }
 
     @Test
     public void getMax() {
-        assertEquals(555, thing.getMax(new int[]{5,-4,555,332,-56,43}));
-    }
-
-    @Test
-    public void getMax1() {
-        assertEquals(55,thing.getMax(Arrays.asList(-2,-0.5,55,3.4)));
-    }
-
-    @Test
-    public void getMax2() {
-        assertEquals(5675L, thing.getMax("a:/input.txt"));
+        List<Double> doubles = new ArrayList<>(Arrays.asList(5.0,5.0,-0.5,5.5));
+        doubleThing.addAll(doubles);
+        assertEquals(5.5,doubleThing.getMax());
     }
 
     @Test
     public void getAverage() {
-        assertEquals(0.0, thing.getAverage(new int[]{5,-5,5,-5,-5,5}));
+        List<Double> doubles = new ArrayList<>(Arrays.asList(5.0,5.0,-0.5,10.5));
+        doubleThing.addAll(doubles);
+        assertEquals(5.0,doubleThing.getAverage());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void getMinNull() {
+        integerThing.getMin();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void getMaxNull() {
+        integerThing.getMax();
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void getAverageNull() {
+        integerThing.getAverage();
     }
 
     @Test
-    public void getAverage1() {
-        assertEquals(10.0, thing.getAverage(Arrays.asList(10, 0.5, 19.5)));
-    }
-
-    @Test
-    public void getAverage2() {
-        assertEquals(5.0, thing.getAverage("a:/input1.txt"));
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void nullArray() {
-        int[] arr = null;
-        thing.getAverage(arr);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void emptyArray() {
-        int[] arr = new int[0];
-        thing.getMin(arr);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void nullList() {
-        List<Integer> list = null;
-        thing.getMax(list);
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void emptyList() {
-        thing.getMax(new ArrayList<>());
+    public void getSize() {
+        assertEquals(0,integerThing.size());
     }
 }

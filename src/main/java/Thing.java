@@ -1,149 +1,135 @@
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Класс для определения минимального, максимального и среднего чисел.
  * @autor Ariona
- * @version 0.2
+ * @version 0.3
  */
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.*;
 
-public class Thing {
 
-    public int getMin(int[] array) {
-        if (array != null && array.length != 0) {
-            Arrays.sort(array);
-            return array[0];
+public class Thing<T extends Number> {
+
+    private final int DEFAULT_CAPACITY = 10;
+
+    private static final Object[] EMPTY_ELEMENTDATA = {};
+
+    private final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+
+    private Object[] numbers;
+    private int size;
+
+    public Thing() {
+        numbers = EMPTY_ELEMENTDATA;
+        size = 0;
+    }
+
+    public Thing(List<T> numbers) {
+        this.numbers = numbers.toArray();
+        size = numbers.size();
+    }
+
+    private void grow(int minCapacity) {
+        // overflow-conscious code
+        int oldCapacity = numbers.length;
+        int newCapacity = oldCapacity + (oldCapacity >> 1);
+        if (newCapacity - minCapacity < 0)
+            newCapacity = minCapacity;
+        if (newCapacity - MAX_ARRAY_SIZE > 0)
+            newCapacity = hugeCapacity(minCapacity);
+        // minCapacity is usually close to size, so this is a win:
+        numbers = Arrays.copyOf(numbers, newCapacity);
+    }
+
+    private int hugeCapacity(int minCapacity) {
+        if (minCapacity < 0) // overflow
+            throw new OutOfMemoryError();
+        return (minCapacity > MAX_ARRAY_SIZE) ?
+                Integer.MAX_VALUE :
+                MAX_ARRAY_SIZE;
+    }
+
+    public T getMin() {
+        if (size != 0) {
+            Object[] copy = Arrays.copyOf(numbers,size);
+            Arrays.sort(copy);
+            return (T)copy[0];
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
     }
 
-    public Number getMin(List<? extends Number> numbers) {
-        if (numbers != null && numbers.size() != 0){
-            sortListNumbers(numbers);
-            return numbers.get(0);
+    public T getMax() {
+        if (size != 0) {
+            Object[] copy = Arrays.copyOf(numbers,size);
+            Arrays.sort(copy);
+            return (T)copy[size-1];
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
     }
 
-    private void sortListNumbers(List<? extends Number> numbers) {
-        Collections.sort(numbers,new Comparator<Number>() {
-            @Override
-            public int compare(Number o1, Number o2) {
-                Double d1 = (o1 == null) ? Double.POSITIVE_INFINITY : o1.doubleValue();
-                Double d2 = (o2 == null) ? Double.POSITIVE_INFINITY : o2.doubleValue();
-                return  d1.compareTo(d2);
-            }
-        });
-    }
-
-    /**
-     * @param fileName - содержит путь к файлу, числа в котором представлены в одну строку через пробел
-     */
-    public Number getMin(String fileName) {
-        List numbers = getListFromFile(fileName);
-        return getMin(numbers);
-    }
-
-    private List<? extends Number> getListFromFile(String fileName) {
-        if (fileName == null || fileName.isEmpty()) {
-            throw new RuntimeException("Неверный формат данных");
-        }
-
-        BufferedReader reader;
-
-        try {
-            reader = new BufferedReader(new FileReader(fileName));
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Файл не найден!");
-        }
-
-        List numbersFromFile = new ArrayList<>();
-        String[] strings;
-        try {
-            strings = reader.readLine().split(" ");
-
-            NumberFormat format = NumberFormat.getInstance();
-            for (int i = 0; i < strings.length; i++) {
-                try {
-                    numbersFromFile.add(format.parse(strings[i]));
-                } catch (NumberFormatException | ParseException e) {
-                    throw new RuntimeException("Неверный формат данных");
-                }
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка чтения файла!");
-        }
-        return numbersFromFile;
-    }
-
-    public int getMax(int[] array) {
-        if (array != null && array.length != 0) {
-            Arrays.sort(array);
-            return array[array.length-1];
-        } else {
-            throw new RuntimeException("Неверный формат данных");
-        }
-    }
-
-    public Number getMax(List<? extends Number> numbers) {
-        if (numbers != null && numbers.size() != 0){
-            sortListNumbers(numbers);
-            return numbers.get(numbers.size()-1);
-        } else {
-            throw new RuntimeException("Неверный формат данных");
-        }
-    }
-
-    /**
-     * @param fileName - содержит путь к файлу, числа в котором представлены в одну строку через пробел
-     */
-    public Number getMax(String fileName) {
-        List numbersFromFile = getListFromFile(fileName);
-        return getMax(numbersFromFile);
-    }
-
-    public double getAverage(int[] array) {
-        if (array != null && array.length != 0) {
-            OptionalDouble average = Arrays.stream(array).average();
-            if (average.isPresent()) {
-                return average.getAsDouble();
-            } else {
-                throw new RuntimeException();
-            }
-        } else {
-            throw new RuntimeException("Неверный формат данных");
-        }
-
-    }
-
-    public double getAverage(List<? extends Number> numbers) {
-        if (numbers != null && numbers.size() != 0){
+    public double getAverage() {
+        if (size != 0) {
             double sum = 0;
-
-            for (Number number : numbers) {
-                sum += number.doubleValue();
+            for (int i = 0; i < size; i++) {
+                sum += (double) numbers[i];
             }
-
-            return sum / numbers.size();
+            return sum / size;
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
-
     }
 
-    /**
-     * @param fileName - содержит путь к файлу, числа в котором представлены в одну строку через пробел
-     */
-    public double getAverage(String fileName) {
-        List numbers = getListFromFile(fileName);
-        return getAverage(numbers);
+    private int calculateCapacity(Object[] numbers, int minCapacity) {
+        if (numbers == EMPTY_ELEMENTDATA) {
+            return Math.max(DEFAULT_CAPACITY, minCapacity);
+        }
+        return minCapacity;
+    }
+
+    private void ensureCapacityInternal(int minCapacity) {
+        ensureExplicitCapacity(calculateCapacity(numbers, minCapacity));
+    }
+
+    private void ensureExplicitCapacity(int minCapacity) {
+        if (minCapacity - numbers.length > 0)
+            grow(minCapacity);
+    }
+
+    public void add(T number) {
+        ensureCapacityInternal(size + 1);  // Increments modCount!!
+        numbers[size++] = number;
+    }
+
+    public void addAll(List<? extends T> c) {
+        Object[] a = c.toArray();
+        int numNew = a.length;
+        ensureCapacityInternal(size + numNew);  // Increments modCount
+        System.arraycopy(a, 0, numbers, size, numNew);
+        size += numNew;
+    }
+
+
+    @Override
+    public String toString() {
+
+        int iMax = size - 1;
+        if (iMax == -1)
+            return "[]";
+
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = 0; ; i++) {
+            b.append(numbers[i]);
+            if (i == iMax)
+                return b.append(']').toString();
+            b.append(", ");
+        }
+    }
+
+    public int size() {
+        return size;
     }
 }
