@@ -1,140 +1,120 @@
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Класс для определения минимального, максимального и среднего чисел.
  * @autor Ariona
- * @version 0.3
+ * @version 0.4
  */
 
+public class Thing<T extends Number & Comparable<? super T>> {
 
+    private List<T> list;
 
-public class Thing<T extends Number> {
+    private T minElement;
 
-    private final int DEFAULT_CAPACITY = 10;
+    private T maxElement;
 
-    private static final Object[] EMPTY_ELEMENTDATA = {};
-
-    private final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
-
-    private Object[] numbers;
-    private int size;
+    private double average;
 
     public Thing() {
-        numbers = EMPTY_ELEMENTDATA;
-        size = 0;
+        list = new ArrayList<>();
     }
 
     public Thing(List<T> numbers) {
-        this.numbers = numbers.toArray();
-        size = numbers.size();
+        this();
+        list.addAll(numbers);
+        compute();
     }
 
-    private void grow(int minCapacity) {
-        // overflow-conscious code
-        int oldCapacity = numbers.length;
-        int newCapacity = oldCapacity + (oldCapacity >> 1);
-        if (newCapacity - minCapacity < 0)
-            newCapacity = minCapacity;
-        if (newCapacity - MAX_ARRAY_SIZE > 0)
-            newCapacity = hugeCapacity(minCapacity);
-        // minCapacity is usually close to size, so this is a win:
-        numbers = Arrays.copyOf(numbers, newCapacity);
+    private void compute() {
+        minElement = computeMin();
+        maxElement = computeMax();
+        average = computeAverage();
     }
 
-    private int hugeCapacity(int minCapacity) {
-        if (minCapacity < 0) // overflow
-            throw new OutOfMemoryError();
-        return (minCapacity > MAX_ARRAY_SIZE) ?
-                Integer.MAX_VALUE :
-                MAX_ARRAY_SIZE;
-    }
-
-    public T getMin() {
-        if (size != 0) {
-            Object[] copy = Arrays.copyOf(numbers,size);
-            Arrays.sort(copy);
-            return (T)copy[0];
+    public T computeMin() {
+        if (list.size() != 0) {
+            return Collections.min(list);
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
     }
 
-    public T getMax() {
-        if (size != 0) {
-            Object[] copy = Arrays.copyOf(numbers,size);
-            Arrays.sort(copy);
-            return (T)copy[size-1];
+    public T computeMax() {
+        if (list.size() != 0) {
+            return Collections.max(list);
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
     }
 
-    public double getAverage() {
-        if (size != 0) {
-            double sum = 0;
-            for (int i = 0; i < size; i++) {
-                sum += (double) numbers[i];
+    public double computeAverage() {
+        if (list.size() != 0) {
+            OptionalDouble optionalDouble = list.stream()
+                                                .mapToDouble(a -> a.doubleValue())
+                                                .average();
+            if (optionalDouble.isPresent()) {
+                return optionalDouble.getAsDouble();
+            } else {
+                throw new RuntimeException();
             }
-            return sum / size;
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
     }
-
-    private int calculateCapacity(Object[] numbers, int minCapacity) {
-        if (numbers == EMPTY_ELEMENTDATA) {
-            return Math.max(DEFAULT_CAPACITY, minCapacity);
-        }
-        return minCapacity;
-    }
-
-    private void ensureCapacityInternal(int minCapacity) {
-        ensureExplicitCapacity(calculateCapacity(numbers, minCapacity));
-    }
-
-    private void ensureExplicitCapacity(int minCapacity) {
-        if (minCapacity - numbers.length > 0)
-            grow(minCapacity);
-    }
-
-    public void add(T number) {
-        ensureCapacityInternal(size + 1);  // Increments modCount!!
-        numbers[size++] = number;
-    }
-
-    public void addAll(List<? extends T> c) {
-        Object[] a = c.toArray();
-        int numNew = a.length;
-        ensureCapacityInternal(size + numNew);  // Increments modCount
-        System.arraycopy(a, 0, numbers, size, numNew);
-        size += numNew;
-    }
-
 
     @Override
     public String toString() {
-
-        int iMax = size - 1;
+        int iMax = size() - 1;
         if (iMax == -1)
             return "[]";
 
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
-            b.append(numbers[i]);
+            b.append(list.get(i));
             if (i == iMax)
                 return b.append(']').toString();
             b.append(", ");
         }
     }
 
-    public int size() {
-        return size;
+    public void add(T t) {
+        list.add(t);
+        compute();
     }
 
-    public void clean() {
-        numbers = EMPTY_ELEMENTDATA;
-        size = 0;
+    public void addAll(Collection<? extends T> c) {
+        list.addAll(c);
+        compute();
+    }
+
+    public void clear() {
+        list.clear();
+    }
+
+    public int size() {
+        return list.size();
+    }
+
+    public T getMin() {
+        if (list.isEmpty()) {
+            throw new RuntimeException("Отсутствуют данные для вычисления");
+        }
+        return minElement;
+    }
+
+    public T getMax() {
+        if (list.isEmpty()) {
+            throw new RuntimeException("Отсутствуют данные для вычисления");
+        }
+        return maxElement;
+    }
+
+    public double getAverage() {
+        if (list.isEmpty()) {
+            throw new RuntimeException("Отсутствуют данные для вычисления");
+        }
+        return average;
     }
 }

@@ -111,7 +111,7 @@ public class ThingTest {
     @Test
     public void clean() {
         integerThing.add(5);
-        integerThing.clean();
+        integerThing.clear();
         assertEquals("[]", integerThing.toString());
         integerThing.add(10);
         assertEquals(Integer.valueOf(10),integerThing.getMin());
