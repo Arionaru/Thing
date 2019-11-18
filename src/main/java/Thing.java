@@ -32,7 +32,7 @@ public class Thing<T extends Number & Comparable<? super T>> {
         average = computeAverage();
     }
 
-    public T computeMin() {
+    private T computeMin() {
         if (list.size() != 0) {
             return Collections.min(list);
         } else {
@@ -40,7 +40,7 @@ public class Thing<T extends Number & Comparable<? super T>> {
         }
     }
 
-    public T computeMax() {
+    private T computeMax() {
         if (list.size() != 0) {
             return Collections.max(list);
         } else {
@@ -48,7 +48,7 @@ public class Thing<T extends Number & Comparable<? super T>> {
         }
     }
 
-    public double computeAverage() {
+    private double computeAverage() {
         if (list.size() != 0) {
             OptionalDouble optionalDouble = list.stream()
                                                 .mapToDouble(a -> a.doubleValue())
