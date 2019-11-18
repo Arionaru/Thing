@@ -103,17 +103,4 @@ public class ThingTest {
         integerThing.getAverage();
     }
 
-    @Test
-    public void getSize() {
-        assertEquals(0,integerThing.size());
-    }
-
-    @Test
-    public void clean() {
-        integerThing.add(5);
-        integerThing.clear();
-        assertEquals("[]", integerThing.toString());
-        integerThing.add(10);
-        assertEquals(Integer.valueOf(10),integerThing.getMin());
-    }
 }
