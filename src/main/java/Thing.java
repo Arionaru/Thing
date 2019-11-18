@@ -50,11 +50,13 @@ public class Thing<T extends Number & Comparable<? super T>> {
 
     private void computeMin(List<T> numbers) {
         T numbersMin;
+
         if (!numbers.isEmpty()) {
             numbersMin = Collections.min(numbers);
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
+
         if (minElement == null || minElement.compareTo(numbersMin) >= 0) {
             minElement = numbersMin;
         }
@@ -68,11 +70,13 @@ public class Thing<T extends Number & Comparable<? super T>> {
 
     private void computeMax(List<T> numbers) {
         T numbersMax;
+
         if (!numbers.isEmpty()) {
             numbersMax = Collections.max(numbers);
         } else {
             throw new RuntimeException("Неверный формат данных");
         }
+
         if (maxElement == null || maxElement.compareTo(numbersMax) <= 0) {
             maxElement = numbersMax;
         }
@@ -83,6 +87,7 @@ public class Thing<T extends Number & Comparable<? super T>> {
             count++;
             average = number.doubleValue();
         }
+
         count++;
         average = (sum + number.doubleValue()) / count;
     }
@@ -112,6 +117,7 @@ public class Thing<T extends Number & Comparable<? super T>> {
         if (count == 0) {
             throw new RuntimeException("Отсутствуют данные для вычисления");
         }
+
         return minElement;
     }
 
@@ -119,6 +125,7 @@ public class Thing<T extends Number & Comparable<? super T>> {
         if (count == 0) {
             throw new RuntimeException("Отсутствуют данные для вычисления");
         }
+
         return maxElement;
     }
 
@@ -126,6 +133,7 @@ public class Thing<T extends Number & Comparable<? super T>> {
         if (count == 0) {
             throw new RuntimeException("Отсутствуют данные для вычисления");
         }
+
         return average;
     }
 
@@ -133,7 +141,6 @@ public class Thing<T extends Number & Comparable<? super T>> {
         count++;
         sum += number.doubleValue();
         compute(number);
-
     }
 
     public void addAll(List<T> numbers) {
