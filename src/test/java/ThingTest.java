@@ -22,9 +22,8 @@ public class ThingTest {
     }
 
     @Test
-    public void constructorWithoutParameterTest() {
-        Thing<Integer> thing = new Thing<>();
-        assertEquals("[]", thing.toString());
+    public void defaultConstructor() {
+        integerThing = new Thing<>();
     }
 
     @Test
@@ -32,39 +31,38 @@ public class ThingTest {
         Double[] d = {5.0,-0.5, 5.5};
         List<Double> doubles = new ArrayList<>(Arrays.asList(d));
         Thing<Double> thing = new Thing<>(doubles);
-        assertEquals("[5.0, -0.5, 5.5]", thing.toString());
     }
 
     @Test
     public void add() {
         integerThing.add(5);
-        assertEquals("[5]",integerThing.toString());
-    }
-
-    @Test
-    public void addAll() {
-        integerThing.addAll(Arrays.asList(5,5,5,5,5));
-        assertEquals("[5, 5, 5, 5, 5]", integerThing.toString());
+        assertEquals(new Integer(5),integerThing.getMin());
     }
 
     @Test
     public void add2() {
         longThing.add(5L);
-        assertEquals("[5]", longThing.toString());
+        assertEquals(new Long(5), longThing.getMax());
+    }
+
+    @Test
+    public void addAll() {
+        integerThing.addAll(Arrays.asList(5,5,5,5,5));
+        assertEquals(5.0, integerThing.getAverage());
     }
 
     @Test
     public void addAll1() {
         List<Long> longs = new ArrayList<>(Arrays.asList(5L,5L,5L));
         longThing.addAll(longs);
-        assertEquals("[5, 5, 5]", longThing.toString());
+        assertEquals(new Long(5), longThing.getMax());
     }
 
     @Test
     public void addAll2() {
         List<Double> doubles = new ArrayList<>(Arrays.asList(5.0,5.0,-0.5,5.5));
         doubleThing.addAll(doubles);
-        assertEquals("[5.0, 5.0, -0.5, 5.5]", doubleThing.toString());
+        assertEquals(-0.5, doubleThing.getMin());
     }
 
     @Test
@@ -86,6 +84,18 @@ public class ThingTest {
         List<Double> doubles = new ArrayList<>(Arrays.asList(5.0,5.0,-0.5,10.5));
         doubleThing.addAll(doubles);
         assertEquals(5.0,doubleThing.getAverage());
+    }
+
+    @Test
+    public void doubleAdd() {
+        List<Integer> first = new ArrayList<>(Arrays.asList(5,5,5,5));
+        List<Integer> second = new ArrayList<>(Arrays.asList(-5,-5,-5,-5));
+        integerThing.addAll(first);
+        integerThing.addAll(second);
+        assertEquals(new Integer(-5), integerThing.getMin());
+        assertEquals(new Integer(5), integerThing.getMax());
+        assertEquals(0.0,integerThing.getAverage());
+
     }
 
     @Test(expected = RuntimeException.class)
